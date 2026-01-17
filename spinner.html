@@ -739,7 +739,6 @@
 
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            const isTouch = !!e.touches;
 
             const currentAngle = getAngleFromCenter(clientX, clientY);
             let deltaAngle = currentAngle - lastAngle;
@@ -751,9 +750,8 @@
             const deltaTime = now - lastTime;
 
             if (deltaTime > 0) {
-                // Touch needs higher multiplier to feel responsive
-                const multiplier = isTouch ? 24 : 16;
-                const angularVelocity = deltaAngle / deltaTime * multiplier;
+                // Same responsive feel for both touch and mouse
+                const angularVelocity = deltaAngle / deltaTime * 24;
                 angularVelocities.push(angularVelocity);
                 if (angularVelocities.length > 5) angularVelocities.shift();
             }
