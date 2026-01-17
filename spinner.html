@@ -828,13 +828,16 @@
         }
 
         function triggerTick() {
-            if (Math.abs(velocity) > 1) {
-                pointer.classList.remove('bounce');
-                void pointer.offsetWidth;
-                pointer.classList.add('bounce');
-            }
+            // Pointer bounce at any speed
+            pointer.classList.remove('bounce');
+            void pointer.offsetWidth;
+            pointer.classList.add('bounce');
 
-            if (soundEnabled && audioContext && audioContext.state === 'running') {
+            // Play tick sound at any speed
+            if (soundEnabled && audioContext) {
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
                 playTick();
             }
         }
