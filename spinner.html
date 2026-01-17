@@ -739,6 +739,7 @@
 
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            const isTouch = !!e.touches;
 
             const currentAngle = getAngleFromCenter(clientX, clientY);
             let deltaAngle = currentAngle - lastAngle;
@@ -750,7 +751,9 @@
             const deltaTime = now - lastTime;
 
             if (deltaTime > 0) {
-                const angularVelocity = deltaAngle / deltaTime * 16;
+                // Touch needs higher multiplier to feel responsive
+                const multiplier = isTouch ? 24 : 16;
+                const angularVelocity = deltaAngle / deltaTime * multiplier;
                 angularVelocities.push(angularVelocity);
                 if (angularVelocities.length > 5) angularVelocities.shift();
             }
@@ -771,7 +774,13 @@
             if (angularVelocities.length > 0) {
                 // Use exact velocity from drag - full control
                 velocity = angularVelocities.reduce((a, b) => a + b, 0) / angularVelocities.length;
-                velocity *= 1.5; // Slight boost for natural feel
+
+                // Non-linear scaling: slow = controlled, fast = CRAZY
+                // Slow drags (< 3): ~1.5x boost
+                // Fast drags (> 8): up to 4x boost
+                const absVel = Math.abs(velocity);
+                const boost = 1.5 + Math.min(absVel / 4, 2.5);
+                velocity *= boost;
 
                 if (Math.abs(velocity) > 0.2) {
                     isSpinning = true;
