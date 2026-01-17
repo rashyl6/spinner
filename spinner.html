@@ -516,15 +516,10 @@
         const BASE_NAMES = ['Klara', 'Ebbe', 'Lo'];
         const SEGMENTS_PER_NAME = 4; // Each name appears 4 times = 12 total segments
 
-        // Build the segments array (names repeated for more tension)
+        // Build the segments array in repeating order: Klara, Ebbe, Lo, Klara, Ebbe, Lo...
         const SEGMENTS = [];
         for (let i = 0; i < SEGMENTS_PER_NAME; i++) {
             BASE_NAMES.forEach(name => SEGMENTS.push(name));
-        }
-        // Shuffle to mix them up
-        for (let i = SEGMENTS.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [SEGMENTS[i], SEGMENTS[j]] = [SEGMENTS[j], SEGMENTS[i]];
         }
 
         // Colors for each base name
