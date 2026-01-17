@@ -851,14 +851,22 @@
             oscillator.connect(gainNode);
             gainNode.connect(audioContext.destination);
 
-            oscillator.frequency.value = 600 + Math.random() * 300;
-            oscillator.type = 'sine';
+            // Pitch and volume based on speed
+            // Fast spin = higher pitch, louder
+            // Slow spin = lower pitch, softer
+            const speed = Math.abs(velocity);
+            const pitch = 400 + Math.min(speed * 15, 600);
+            const volume = Math.min(0.03 + speed * 0.008, 0.15);
+            const duration = Math.max(0.02, 0.06 - speed * 0.002);
 
-            gainNode.gain.setValueAtTime(0.08, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.04);
+            oscillator.frequency.value = pitch;
+            oscillator.type = 'triangle';
+
+            gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
 
             oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.04);
+            oscillator.stop(audioContext.currentTime + duration);
         }
 
         // ========== WINNER ANNOUNCEMENT ==========
