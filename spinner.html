@@ -769,16 +769,11 @@
             isDragging = false;
 
             if (angularVelocities.length > 0) {
+                // Use exact velocity from drag - full control
                 velocity = angularVelocities.reduce((a, b) => a + b, 0) / angularVelocities.length;
+                velocity *= 1.5; // Slight boost for natural feel
 
-                if (Math.abs(velocity) > 0.3) {
-                    // Much faster initial velocity
-                    velocity *= 5;
-                    // Add minimum spin for excitement
-                    const minVelocity = 25;
-                    if (Math.abs(velocity) < minVelocity) {
-                        velocity = velocity > 0 ? minVelocity : -minVelocity;
-                    }
+                if (Math.abs(velocity) > 0.2) {
                     isSpinning = true;
                     spinWheel();
                 } else {
