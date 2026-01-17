@@ -514,7 +514,7 @@
     <script>
         // ========== CONFIGURATION ==========
         const BASE_NAMES = ['Klara', 'Ebbe', 'Lo'];
-        const SEGMENTS_PER_NAME = 4; // Each name appears 4 times = 12 total segments
+        const SEGMENTS_PER_NAME = 6; // Each name appears 6 times = 18 total segments
 
         // Build the segments array in repeating order: Klara, Ebbe, Lo, Klara, Ebbe, Lo...
         const SEGMENTS = [];
@@ -613,7 +613,7 @@
                 ctx.textAlign = 'right';
                 ctx.textBaseline = 'middle';
                 ctx.fillStyle = color.text;
-                ctx.font = `bold ${Math.max(14, wheelSize / 18)}px 'Fredoka One', sans-serif`;
+                ctx.font = `bold ${Math.max(12, wheelSize / 22)}px 'Fredoka One', sans-serif`;
                 ctx.shadowColor = 'rgba(0,0,0,0.5)';
                 ctx.shadowBlur = 3;
                 ctx.shadowOffsetX = 1;
