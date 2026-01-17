@@ -874,10 +874,11 @@
             const segmentAngle = 360 / SEGMENTS.length;
             let normalizedRotation = ((currentRotation % 360) + 360) % 360;
 
-            // Pointer is at top, wheel rotates. Calculate which segment is at top.
-            let pointerPosition = (360 - normalizedRotation + 90) % 360;
-            if (pointerPosition < 0) pointerPosition += 360;
-            const winningIndex = Math.floor(pointerPosition / segmentAngle) % SEGMENTS.length;
+            // Segments are drawn starting at -90deg (top).
+            // CSS rotate goes clockwise for positive values.
+            // When wheel rotates clockwise by X, segment 0 moves right,
+            // and we need to find which segment is now at the top.
+            const winningIndex = Math.floor((360 - normalizedRotation) / segmentAngle) % SEGMENTS.length;
 
             const winner = SEGMENTS[winningIndex];
             winnerNameEl.textContent = winner;
