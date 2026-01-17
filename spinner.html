@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>🎪 The Wheel of Fate!</title>
+    <title>Ödets Hjul!</title>
     <style>
-        /* ========== CSS RESET & BASE ========== */
         * {
             margin: 0;
             padding: 0;
@@ -18,23 +17,21 @@
             touch-action: none;
         }
 
-        /* ========== CARNIVAL FONTS ========== */
         @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Luckiest+Guy&display=swap');
 
-        /* ========== BACKGROUND ========== */
         body {
             font-family: 'Fredoka One', cursive;
             background: linear-gradient(180deg, #1a0a2e 0%, #16213e 50%, #0f3460 100%);
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             min-height: 100vh;
+            padding-top: 20px;
             position: relative;
             overflow: hidden;
         }
 
-        /* Starry background */
         .stars {
             position: fixed;
             top: 0;
@@ -57,7 +54,6 @@
             50% { opacity: 1; transform: scale(1.2); }
         }
 
-        /* Carnival tent stripes overlay */
         .tent-overlay {
             position: fixed;
             top: -50%;
@@ -73,16 +69,16 @@
             z-index: 1;
         }
 
-        /* ========== TITLE ========== */
         .title-container {
-            z-index: 10;
+            z-index: 20;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+            position: relative;
         }
 
         .title {
             font-family: 'Luckiest Guy', cursive;
-            font-size: clamp(2rem, 8vw, 4rem);
+            font-size: clamp(1.8rem, 7vw, 3.5rem);
             color: #ffd700;
             text-shadow:
                 3px 3px 0 #c41e3a,
@@ -98,32 +94,34 @@
         }
 
         .subtitle {
-            font-size: clamp(0.9rem, 3vw, 1.2rem);
+            font-size: clamp(0.8rem, 2.5vw, 1.1rem);
             color: #f8b500;
             margin-top: 5px;
             opacity: 0.9;
         }
 
-        /* ========== WHEEL CONTAINER ========== */
         .wheel-stage {
             position: relative;
             z-index: 10;
-        }
-
-        .wheel-frame {
-            position: relative;
-            width: clamp(300px, 80vmin, 500px);
-            height: clamp(300px, 80vmin, 500px);
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        /* Decorative frame border */
+        .wheel-frame {
+            position: relative;
+            width: clamp(280px, 75vmin, 480px);
+            height: clamp(280px, 75vmin, 480px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .frame-border {
             position: absolute;
-            width: 105%;
-            height: 105%;
+            width: 108%;
+            height: 108%;
             border-radius: 50%;
             background: linear-gradient(145deg, #8B4513 0%, #5D3A1A 50%, #3D2510 100%);
             box-shadow:
@@ -133,23 +131,21 @@
             z-index: -1;
         }
 
-        /* Gold trim */
         .gold-trim {
             position: absolute;
-            width: 102%;
-            height: 102%;
+            width: 104%;
+            height: 104%;
             border-radius: 50%;
-            border: 4px solid;
+            border: 5px solid;
             border-color: #ffd700 #b8860b #ffd700 #b8860b;
             z-index: 1;
             pointer-events: none;
         }
 
-        /* ========== CARNIVAL LIGHTS ========== */
         .lights-container {
             position: absolute;
-            width: 108%;
-            height: 108%;
+            width: 112%;
+            height: 112%;
             border-radius: 50%;
             z-index: 2;
             pointer-events: none;
@@ -157,11 +153,11 @@
 
         .bulb {
             position: absolute;
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
             transform: translate(-50%, -50%);
-            box-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+            box-shadow: 0 0 8px currentColor, 0 0 16px currentColor;
         }
 
         .bulb.on {
@@ -173,8 +169,7 @@
             to { opacity: 1; filter: brightness(1.3); }
         }
 
-        /* ========== THE WHEEL ========== */
-        .wheel {
+        .wheel-container {
             width: 100%;
             height: 100%;
             border-radius: 50%;
@@ -187,57 +182,22 @@
                 inset 0 0 30px rgba(0,0,0,0.3),
                 0 0 20px rgba(0,0,0,0.4);
             overflow: hidden;
-            background: #222;
         }
 
-        .wheel:active {
+        .wheel-container:active {
             cursor: grabbing;
         }
 
-        .wheel-inner {
+        #wheel-canvas {
             width: 100%;
             height: 100%;
-            position: relative;
             will-change: transform;
         }
 
-        .segment {
-            position: absolute;
-            width: 50%;
-            height: 50%;
-            left: 50%;
-            top: 0;
-            transform-origin: 0% 100%;
-            overflow: hidden;
-            border: 1px solid rgba(0,0,0,0.2);
-        }
-
-        .segment-content {
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            left: -100%;
-            top: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding-top: 15%;
-        }
-
-        .segment-name {
-            font-family: 'Fredoka One', cursive;
-            font-size: clamp(1rem, 4vmin, 1.5rem);
-            font-weight: bold;
-            text-shadow: 2px 2px 2px rgba(0,0,0,0.5);
-            transform: rotate(90deg);
-            white-space: nowrap;
-        }
-
-        /* ========== CENTER HUB ========== */
         .center-hub {
             position: absolute;
-            width: 20%;
-            height: 20%;
+            width: 15%;
+            height: 15%;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
@@ -255,14 +215,13 @@
         }
 
         .hub-star {
-            font-size: clamp(1.5rem, 5vmin, 2.5rem);
+            font-size: clamp(1.2rem, 4vmin, 2rem);
             filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
         }
 
-        /* ========== POINTER ========== */
         .pointer-container {
             position: absolute;
-            top: -8%;
+            top: -12%;
             left: 50%;
             transform: translateX(-50%);
             z-index: 20;
@@ -272,58 +231,61 @@
         .pointer {
             width: 0;
             height: 0;
-            border-left: 25px solid transparent;
-            border-right: 25px solid transparent;
-            border-top: 50px solid #c41e3a;
+            border-left: 22px solid transparent;
+            border-right: 22px solid transparent;
+            border-top: 45px solid #c41e3a;
             position: relative;
         }
 
         .pointer::before {
             content: '';
             position: absolute;
-            top: -50px;
-            left: -25px;
+            top: -45px;
+            left: -22px;
             width: 0;
             height: 0;
-            border-left: 25px solid transparent;
-            border-right: 25px solid transparent;
-            border-top: 15px solid #ffd700;
+            border-left: 22px solid transparent;
+            border-right: 22px solid transparent;
+            border-top: 12px solid #ffd700;
         }
 
         .pointer::after {
             content: '';
             position: absolute;
-            top: -35px;
-            left: -8px;
-            width: 16px;
-            height: 16px;
+            top: -32px;
+            left: -7px;
+            width: 14px;
+            height: 14px;
             background: radial-gradient(circle, #fff 0%, #ffd700 100%);
             border-radius: 50%;
             box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
         }
 
         .pointer.bounce {
-            animation: pointerBounce 0.3s ease-out;
+            animation: pointerBounce 0.15s ease-out;
         }
 
         @keyframes pointerBounce {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(5px); }
+            50% { transform: translateY(4px); }
         }
 
-        /* ========== SPIN PROMPT ========== */
         .spin-prompt {
-            margin-top: 30px;
-            font-size: clamp(1rem, 4vw, 1.4rem);
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: clamp(0.9rem, 3.5vw, 1.3rem);
             color: #f8b500;
             opacity: 0.9;
             animation: pulse 2s ease-in-out infinite;
-            z-index: 10;
+            z-index: 20;
+            white-space: nowrap;
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 0.6; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.05); }
+            0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+            50% { opacity: 1; transform: translateX(-50%) scale(1.05); }
         }
 
         .spin-prompt.hidden {
@@ -331,7 +293,6 @@
             pointer-events: none;
         }
 
-        /* ========== WINNER POPUP ========== */
         .winner-overlay {
             position: fixed;
             top: 0;
@@ -415,7 +376,6 @@
             transform: translateY(0);
         }
 
-        /* ========== CONFETTI CANVAS ========== */
         #confetti-canvas {
             position: fixed;
             top: 0;
@@ -426,31 +386,6 @@
             z-index: 99;
         }
 
-        /* ========== TICK INDICATOR ========== */
-        .tick-indicator {
-            position: absolute;
-            top: 5%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 8px;
-            height: 8px;
-            background: #ffd700;
-            border-radius: 50%;
-            opacity: 0;
-            z-index: 15;
-            pointer-events: none;
-        }
-
-        .tick-indicator.flash {
-            animation: tickFlash 0.1s ease-out;
-        }
-
-        @keyframes tickFlash {
-            from { opacity: 1; transform: translateX(-50%) scale(1.5); }
-            to { opacity: 0; transform: translateX(-50%) scale(1); }
-        }
-
-        /* ========== SOUND TOGGLE ========== */
         .sound-toggle {
             position: fixed;
             bottom: 20px;
@@ -478,31 +413,34 @@
             opacity: 0.5;
         }
 
-        /* ========== RESPONSIVE ========== */
         @media (max-width: 480px) {
+            body {
+                padding-top: 15px;
+            }
+
             .title-container {
-                margin-bottom: 15px;
+                margin-bottom: 5px;
             }
 
             .pointer {
-                border-left-width: 18px;
-                border-right-width: 18px;
-                border-top-width: 40px;
+                border-left-width: 16px;
+                border-right-width: 16px;
+                border-top-width: 35px;
             }
 
             .pointer::before {
-                top: -40px;
-                left: -18px;
-                border-left-width: 18px;
-                border-right-width: 18px;
-                border-top-width: 12px;
+                top: -35px;
+                left: -16px;
+                border-left-width: 16px;
+                border-right-width: 16px;
+                border-top-width: 10px;
             }
 
             .pointer::after {
-                top: -28px;
-                left: -6px;
-                width: 12px;
-                height: 12px;
+                top: -25px;
+                left: -5px;
+                width: 10px;
+                height: 10px;
             }
 
             .winner-popup {
@@ -511,101 +449,105 @@
             }
 
             .bulb {
-                width: 12px;
-                height: 12px;
+                width: 10px;
+                height: 10px;
+            }
+        }
+
+        @media (max-height: 600px) {
+            body {
+                padding-top: 10px;
+            }
+
+            .title {
+                font-size: clamp(1.4rem, 5vw, 2rem);
+            }
+
+            .subtitle {
+                font-size: clamp(0.7rem, 2vw, 0.9rem);
             }
         }
     </style>
 </head>
 <body>
-    <!-- Starry Background -->
     <div class="stars" id="stars"></div>
-
-    <!-- Tent Overlay -->
     <div class="tent-overlay"></div>
 
-    <!-- Title -->
     <div class="title-container">
-        <h1 class="title">The Wheel of Fate!</h1>
-        <p class="subtitle">Who will be chosen?</p>
+        <h1 class="title">Ödets Hjul!</h1>
+        <p class="subtitle">Vem blir utvald?</p>
     </div>
 
-    <!-- Wheel Stage -->
     <div class="wheel-stage">
         <div class="wheel-frame">
             <div class="frame-border"></div>
             <div class="gold-trim"></div>
             <div class="lights-container" id="lights-container"></div>
 
-            <!-- Pointer -->
             <div class="pointer-container">
                 <div class="pointer" id="pointer"></div>
             </div>
 
-            <!-- Tick Indicator -->
-            <div class="tick-indicator" id="tick-indicator"></div>
-
-            <!-- The Wheel -->
-            <div class="wheel" id="wheel">
-                <div class="wheel-inner" id="wheel-inner"></div>
+            <div class="wheel-container" id="wheel">
+                <canvas id="wheel-canvas"></canvas>
             </div>
 
-            <!-- Center Hub -->
             <div class="center-hub">
-                <span class="hub-star">⭐</span>
+                <span class="hub-star">&#9733;</span>
             </div>
         </div>
     </div>
 
-    <!-- Spin Prompt -->
-    <p class="spin-prompt" id="spin-prompt">🎪 Drag to spin! 🎪</p>
+    <p class="spin-prompt" id="spin-prompt">Dra för att snurra!</p>
 
-    <!-- Winner Overlay -->
     <div class="winner-overlay" id="winner-overlay">
         <div class="winner-popup">
-            <p class="winner-label">🎉 The winner is... 🎉</p>
+            <p class="winner-label">Vinnaren är...</p>
             <h2 class="winner-name" id="winner-name"></h2>
-            <button class="spin-again-btn" id="spin-again-btn">Spin Again!</button>
+            <button class="spin-again-btn" id="spin-again-btn">Snurra igen!</button>
         </div>
     </div>
 
-    <!-- Confetti Canvas -->
     <canvas id="confetti-canvas"></canvas>
-
-    <!-- Sound Toggle -->
-    <button class="sound-toggle" id="sound-toggle" title="Toggle Sound">🔊</button>
+    <button class="sound-toggle" id="sound-toggle" title="Toggle Sound">&#128266;</button>
 
     <script>
         // ========== CONFIGURATION ==========
-        // 🎯 CUSTOMIZE YOUR KIDS' NAMES HERE:
-        const NAMES = ['Klara', 'Ebbe', 'Lo'];
+        const BASE_NAMES = ['Klara', 'Ebbe', 'Lo'];
+        const SEGMENTS_PER_NAME = 4; // Each name appears 4 times = 12 total segments
 
-        // Segment colors (carnival vibrant palette)
-        const COLORS = [
-            { bg: '#e63946', text: '#ffffff' },  // Red
-            { bg: '#2a9d8f', text: '#ffffff' },  // Teal
-            { bg: '#e9c46a', text: '#1a0a2e' },  // Yellow
-            { bg: '#264653', text: '#ffffff' },  // Dark Blue
-            { bg: '#f4a261', text: '#1a0a2e' },  // Orange
-            { bg: '#9b5de5', text: '#ffffff' },  // Purple
-            { bg: '#00b4d8', text: '#ffffff' },  // Cyan
-            { bg: '#ff6b6b', text: '#ffffff' },  // Coral
-        ];
+        // Build the segments array (names repeated for more tension)
+        const SEGMENTS = [];
+        for (let i = 0; i < SEGMENTS_PER_NAME; i++) {
+            BASE_NAMES.forEach(name => SEGMENTS.push(name));
+        }
+        // Shuffle to mix them up
+        for (let i = SEGMENTS.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [SEGMENTS[i], SEGMENTS[j]] = [SEGMENTS[j], SEGMENTS[i]];
+        }
+
+        // Colors for each base name
+        const NAME_COLORS = {
+            'Klara': { bg: '#e63946', text: '#ffffff' },  // Red
+            'Ebbe': { bg: '#2a9d8f', text: '#ffffff' },   // Teal
+            'Lo': { bg: '#e9c46a', text: '#1a0a2e' }      // Yellow
+        };
 
         // ========== DOM ELEMENTS ==========
-        const wheel = document.getElementById('wheel');
-        const wheelInner = document.getElementById('wheel-inner');
+        const wheelContainer = document.getElementById('wheel');
+        const wheelCanvas = document.getElementById('wheel-canvas');
+        const ctx = wheelCanvas.getContext('2d');
         const pointer = document.getElementById('pointer');
-        const tickIndicator = document.getElementById('tick-indicator');
         const spinPrompt = document.getElementById('spin-prompt');
         const winnerOverlay = document.getElementById('winner-overlay');
-        const winnerName = document.getElementById('winner-name');
+        const winnerNameEl = document.getElementById('winner-name');
         const spinAgainBtn = document.getElementById('spin-again-btn');
         const lightsContainer = document.getElementById('lights-container');
         const starsContainer = document.getElementById('stars');
         const soundToggle = document.getElementById('sound-toggle');
         const confettiCanvas = document.getElementById('confetti-canvas');
-        const ctx = confettiCanvas.getContext('2d');
+        const confettiCtx = confettiCanvas.getContext('2d');
 
         // ========== STATE ==========
         let currentRotation = 0;
@@ -618,52 +560,85 @@
         let animationId = null;
         let soundEnabled = true;
         let lastTickSegment = -1;
-
-        // Audio context for tick sounds
+        let wheelSize = 0;
         let audioContext = null;
 
         // ========== INITIALIZATION ==========
         function init() {
-            createWheel();
+            setupCanvas();
+            drawWheel();
             createLights();
             createStars();
-            resizeCanvas();
+            resizeConfettiCanvas();
             setupEventListeners();
+            window.addEventListener('resize', onResize);
         }
 
-        function createWheel() {
-            const segmentAngle = 360 / NAMES.length;
+        function setupCanvas() {
+            const container = wheelContainer.getBoundingClientRect();
+            wheelSize = Math.min(container.width, container.height);
+            const dpr = window.devicePixelRatio || 1;
+            wheelCanvas.width = wheelSize * dpr;
+            wheelCanvas.height = wheelSize * dpr;
+            wheelCanvas.style.width = wheelSize + 'px';
+            wheelCanvas.style.height = wheelSize + 'px';
+            ctx.scale(dpr, dpr);
+        }
 
-            NAMES.forEach((name, index) => {
-                const segment = document.createElement('div');
-                segment.className = 'segment';
-                const color = COLORS[index % COLORS.length];
+        function drawWheel() {
+            const centerX = wheelSize / 2;
+            const centerY = wheelSize / 2;
+            const radius = wheelSize / 2 - 2;
+            const segmentAngle = (2 * Math.PI) / SEGMENTS.length;
 
-                // Calculate rotation for this segment
-                const rotation = index * segmentAngle - 90;
+            ctx.clearRect(0, 0, wheelSize, wheelSize);
 
-                segment.style.transform = `rotate(${rotation}deg) skewY(${90 - segmentAngle}deg)`;
-                segment.style.background = color.bg;
+            SEGMENTS.forEach((name, index) => {
+                const startAngle = index * segmentAngle - Math.PI / 2;
+                const endAngle = startAngle + segmentAngle;
+                const color = NAME_COLORS[name];
 
-                const content = document.createElement('div');
-                content.className = 'segment-content';
-                content.style.transform = `skewY(${segmentAngle - 90}deg)`;
+                // Draw segment
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                ctx.closePath();
+                ctx.fillStyle = color.bg;
+                ctx.fill();
 
-                const nameEl = document.createElement('span');
-                nameEl.className = 'segment-name';
-                nameEl.textContent = name;
-                nameEl.style.color = color.text;
-                // Adjust rotation based on segment angle
-                nameEl.style.transform = `rotate(${segmentAngle / 2 + 90}deg)`;
+                // Segment border
+                ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
 
-                content.appendChild(nameEl);
-                segment.appendChild(content);
-                wheelInner.appendChild(segment);
+                // Draw name
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(startAngle + segmentAngle / 2);
+                ctx.textAlign = 'right';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = color.text;
+                ctx.font = `bold ${Math.max(14, wheelSize / 18)}px 'Fredoka One', sans-serif`;
+                ctx.shadowColor = 'rgba(0,0,0,0.5)';
+                ctx.shadowBlur = 3;
+                ctx.shadowOffsetX = 1;
+                ctx.shadowOffsetY = 1;
+                ctx.fillText(name, radius - 15, 0);
+                ctx.restore();
             });
+
+            // Inner shadow
+            const gradient = ctx.createRadialGradient(centerX, centerY, radius * 0.8, centerX, centerY, radius);
+            gradient.addColorStop(0, 'rgba(0,0,0,0)');
+            gradient.addColorStop(1, 'rgba(0,0,0,0.2)');
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.fillStyle = gradient;
+            ctx.fill();
         }
 
         function createLights() {
-            const numBulbs = 24;
+            const numBulbs = 28;
             const bulbColors = ['#ff4444', '#ffff44', '#44ff44', '#4444ff', '#ff44ff', '#44ffff'];
 
             for (let i = 0; i < numBulbs; i++) {
@@ -673,14 +648,11 @@
                 bulb.style.color = bulbColors[i % bulbColors.length];
                 bulb.style.background = bulbColors[i % bulbColors.length];
 
-                // Position on circle
                 const radius = 50;
                 const x = 50 + radius * Math.cos((angle - 90) * Math.PI / 180);
                 const y = 50 + radius * Math.sin((angle - 90) * Math.PI / 180);
                 bulb.style.left = `${x}%`;
                 bulb.style.top = `${y}%`;
-
-                // Stagger animation
                 bulb.style.animationDelay = `${(i % 3) * 0.15}s`;
                 bulb.classList.add('on');
 
@@ -702,45 +674,44 @@
             }
         }
 
-        function resizeCanvas() {
+        function resizeConfettiCanvas() {
             confettiCanvas.width = window.innerWidth;
             confettiCanvas.height = window.innerHeight;
         }
 
+        function onResize() {
+            setupCanvas();
+            drawWheel();
+            updateWheelRotation();
+            resizeConfettiCanvas();
+        }
+
         // ========== EVENT LISTENERS ==========
         function setupEventListeners() {
-            // Mouse events
-            wheel.addEventListener('mousedown', onDragStart);
+            wheelContainer.addEventListener('mousedown', onDragStart);
             window.addEventListener('mousemove', onDragMove);
             window.addEventListener('mouseup', onDragEnd);
 
-            // Touch events
-            wheel.addEventListener('touchstart', onDragStart, { passive: false });
+            wheelContainer.addEventListener('touchstart', onDragStart, { passive: false });
             window.addEventListener('touchmove', onDragMove, { passive: false });
             window.addEventListener('touchend', onDragEnd);
 
-            // Prevent context menu on wheel
-            wheel.addEventListener('contextmenu', e => e.preventDefault());
+            wheelContainer.addEventListener('contextmenu', e => e.preventDefault());
 
-            // Spin again button
             spinAgainBtn.addEventListener('click', () => {
                 winnerOverlay.classList.remove('show');
                 spinPrompt.classList.remove('hidden');
             });
 
-            // Sound toggle
             soundToggle.addEventListener('click', () => {
                 soundEnabled = !soundEnabled;
-                soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
+                soundToggle.innerHTML = soundEnabled ? '&#128266;' : '&#128263;';
                 soundToggle.classList.toggle('muted', !soundEnabled);
             });
-
-            // Resize
-            window.addEventListener('resize', resizeCanvas);
         }
 
         function getAngleFromCenter(clientX, clientY) {
-            const rect = wheel.getBoundingClientRect();
+            const rect = wheelContainer.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
             return Math.atan2(clientY - centerY, clientX - centerX) * 180 / Math.PI;
@@ -761,7 +732,6 @@
 
             spinPrompt.classList.add('hidden');
 
-            // Initialize audio context on first interaction
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
             }
@@ -778,7 +748,6 @@
             const currentAngle = getAngleFromCenter(clientX, clientY);
             let deltaAngle = currentAngle - lastAngle;
 
-            // Handle wrap-around
             if (deltaAngle > 180) deltaAngle -= 360;
             if (deltaAngle < -180) deltaAngle += 360;
 
@@ -786,7 +755,7 @@
             const deltaTime = now - lastTime;
 
             if (deltaTime > 0) {
-                const angularVelocity = deltaAngle / deltaTime * 16; // Normalize to ~60fps
+                const angularVelocity = deltaAngle / deltaTime * 16;
                 angularVelocities.push(angularVelocity);
                 if (angularVelocities.length > 5) angularVelocities.shift();
             }
@@ -805,12 +774,16 @@
             isDragging = false;
 
             if (angularVelocities.length > 0) {
-                // Calculate average velocity from recent samples
                 velocity = angularVelocities.reduce((a, b) => a + b, 0) / angularVelocities.length;
 
-                // Add minimum spin if there's any velocity
-                if (Math.abs(velocity) > 0.5) {
-                    velocity *= 2; // Amplify the velocity
+                if (Math.abs(velocity) > 0.3) {
+                    // Much faster initial velocity
+                    velocity *= 5;
+                    // Add minimum spin for excitement
+                    const minVelocity = 25;
+                    if (Math.abs(velocity) < minVelocity) {
+                        velocity = velocity > 0 ? minVelocity : -minVelocity;
+                    }
                     isSpinning = true;
                     spinWheel();
                 } else {
@@ -825,8 +798,9 @@
         function spinWheel() {
             if (!isSpinning) return;
 
-            const friction = 0.985; // Deceleration factor
-            const minVelocity = 0.1;
+            // Slower deceleration for longer spins
+            const friction = 0.992;
+            const minVelocity = 0.08;
 
             velocity *= friction;
             currentRotation += velocity;
@@ -844,12 +818,11 @@
         }
 
         function updateWheelRotation() {
-            wheelInner.style.transform = `rotate(${currentRotation}deg)`;
+            wheelCanvas.style.transform = `rotate(${currentRotation}deg)`;
         }
 
         function checkTick() {
-            const segmentAngle = 360 / NAMES.length;
-            // Normalize rotation to 0-360
+            const segmentAngle = 360 / SEGMENTS.length;
             let normalizedRotation = ((currentRotation % 360) + 360) % 360;
             const currentSegment = Math.floor(normalizedRotation / segmentAngle);
 
@@ -860,19 +833,12 @@
         }
 
         function triggerTick() {
-            // Visual tick
-            tickIndicator.classList.remove('flash');
-            void tickIndicator.offsetWidth; // Trigger reflow
-            tickIndicator.classList.add('flash');
-
-            // Pointer bounce
-            if (Math.abs(velocity) > 2) {
+            if (Math.abs(velocity) > 1) {
                 pointer.classList.remove('bounce');
                 void pointer.offsetWidth;
                 pointer.classList.add('bounce');
             }
 
-            // Audio tick
             if (soundEnabled && audioContext && audioContext.state === 'running') {
                 playTick();
             }
@@ -885,38 +851,33 @@
             oscillator.connect(gainNode);
             gainNode.connect(audioContext.destination);
 
-            oscillator.frequency.value = 800 + Math.random() * 200;
+            oscillator.frequency.value = 600 + Math.random() * 300;
             oscillator.type = 'sine';
 
-            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+            gainNode.gain.setValueAtTime(0.08, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.04);
 
             oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.05);
+            oscillator.stop(audioContext.currentTime + 0.04);
         }
 
         // ========== WINNER ANNOUNCEMENT ==========
         function announceWinner() {
-            const segmentAngle = 360 / NAMES.length;
-            // The pointer is at the top (0 degrees / 360 degrees)
-            // We need to find which segment is under the pointer
+            const segmentAngle = 360 / SEGMENTS.length;
             let normalizedRotation = ((currentRotation % 360) + 360) % 360;
 
-            // The wheel rotates clockwise, pointer is at top
-            // Segment 0 starts at -90 degrees (pointing right in our setup)
-            // Adjust for the offset
+            // Pointer is at top, wheel rotates. Calculate which segment is at top.
             let pointerPosition = (360 - normalizedRotation + 90) % 360;
-            const winningIndex = Math.floor(pointerPosition / segmentAngle) % NAMES.length;
+            if (pointerPosition < 0) pointerPosition += 360;
+            const winningIndex = Math.floor(pointerPosition / segmentAngle) % SEGMENTS.length;
 
-            const winner = NAMES[winningIndex];
-            winnerName.textContent = winner;
+            const winner = SEGMENTS[winningIndex];
+            winnerNameEl.textContent = winner;
 
-            // Play celebration sound
             if (soundEnabled && audioContext) {
                 playFanfare();
             }
 
-            // Show popup with delay for anticipation
             setTimeout(() => {
                 winnerOverlay.classList.add('show');
                 launchConfetti();
@@ -924,7 +885,7 @@
         }
 
         function playFanfare() {
-            const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+            const notes = [523.25, 659.25, 783.99, 1046.50];
 
             notes.forEach((freq, i) => {
                 const oscillator = audioContext.createOscillator();
@@ -948,22 +909,22 @@
 
         // ========== CONFETTI ==========
         const confetti = [];
-        const confettiColors = ['#e63946', '#f4a261', '#e9c46a', '#2a9d8f', '#264653', '#9b5de5', '#ff6b6b'];
+        const confettiColors = ['#e63946', '#f4a261', '#e9c46a', '#2a9d8f', '#264653', '#9b5de5', '#ff6b6b', '#ffd700'];
 
         function launchConfetti() {
             confetti.length = 0;
 
-            for (let i = 0; i < 150; i++) {
+            for (let i = 0; i < 200; i++) {
                 confetti.push({
                     x: Math.random() * confettiCanvas.width,
                     y: -20 - Math.random() * 100,
-                    w: Math.random() * 10 + 5,
-                    h: Math.random() * 6 + 4,
+                    w: Math.random() * 12 + 5,
+                    h: Math.random() * 8 + 4,
                     color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
-                    vx: (Math.random() - 0.5) * 4,
-                    vy: Math.random() * 3 + 2,
+                    vx: (Math.random() - 0.5) * 6,
+                    vy: Math.random() * 4 + 3,
                     rotation: Math.random() * 360,
-                    rotationSpeed: (Math.random() - 0.5) * 10,
+                    rotationSpeed: (Math.random() - 0.5) * 15,
                     oscillation: Math.random() * Math.PI * 2,
                     oscillationSpeed: Math.random() * 0.1 + 0.02
                 });
@@ -973,7 +934,7 @@
         }
 
         function animateConfetti() {
-            ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
 
             let activeConfetti = 0;
 
@@ -985,14 +946,14 @@
                     c.y += c.vy;
                     c.rotation += c.rotationSpeed;
                     c.oscillation += c.oscillationSpeed;
-                    c.vy += 0.05; // Gravity
+                    c.vy += 0.05;
 
-                    ctx.save();
-                    ctx.translate(c.x, c.y);
-                    ctx.rotate(c.rotation * Math.PI / 180);
-                    ctx.fillStyle = c.color;
-                    ctx.fillRect(-c.w / 2, -c.h / 2, c.w, c.h);
-                    ctx.restore();
+                    confettiCtx.save();
+                    confettiCtx.translate(c.x, c.y);
+                    confettiCtx.rotate(c.rotation * Math.PI / 180);
+                    confettiCtx.fillStyle = c.color;
+                    confettiCtx.fillRect(-c.w / 2, -c.h / 2, c.w, c.h);
+                    confettiCtx.restore();
                 }
             });
 
