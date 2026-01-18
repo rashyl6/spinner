@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Ödets Hjul!</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Ödets Hjul">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1a0a2e">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%231a0a2e'/><circle cx='50' cy='50' r='40' fill='%23e63946'/><path d='M50 10 L50 50 L85 30 Z' fill='%232a9d8f'/><path d='M50 50 L85 30 L85 70 Z' fill='%23e9c46a'/><path d='M50 50 L85 70 L50 90 Z' fill='%23e63946'/><path d='M50 50 L50 90 L15 70 Z' fill='%232a9d8f'/><path d='M50 50 L15 70 L15 30 Z' fill='%23e9c46a'/><path d='M50 50 L15 30 L50 10 Z' fill='%23e63946'/><circle cx='50' cy='50' r='12' fill='%23ffd700'/><text x='50' y='8' text-anchor='middle' font-size='12' fill='%23ffd700'>▼</text></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%231a0a2e'/><circle cx='50' cy='50' r='40' fill='%23e63946'/><path d='M50 10 L50 50 L85 30 Z' fill='%232a9d8f'/><path d='M50 50 L85 30 L85 70 Z' fill='%23e9c46a'/><path d='M50 50 L85 70 L50 90 Z' fill='%23e63946'/><path d='M50 50 L50 90 L15 70 Z' fill='%232a9d8f'/><path d='M50 50 L15 70 L15 30 Z' fill='%23e9c46a'/><path d='M50 50 L15 30 L50 10 Z' fill='%23e63946'/><circle cx='50' cy='50' r='12' fill='%23ffd700'/><text x='50' y='8' text-anchor='middle' font-size='12' fill='%23ffd700'>▼</text></svg>">
     <style>
         * {
             margin: 0;
@@ -27,7 +34,7 @@
             align-items: center;
             justify-content: flex-start;
             min-height: 100vh;
-            padding-top: 20px;
+            padding-top: 10px;
             position: relative;
             overflow: hidden;
         }
@@ -72,7 +79,7 @@
         .title-container {
             z-index: 20;
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             position: relative;
         }
 
@@ -107,12 +114,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: visible;
         }
 
         .wheel-frame {
             position: relative;
-            width: clamp(280px, 75vmin, 480px);
-            height: clamp(280px, 75vmin, 480px);
+            width: clamp(340px, 95vmin, 700px);
+            height: clamp(340px, 95vmin, 700px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -413,6 +421,34 @@
             opacity: 0.5;
         }
 
+        .family-toggle {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            color: #ffd700;
+            font-size: 1.3rem;
+            cursor: pointer;
+            z-index: 50;
+            transition: background 0.2s ease, transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .family-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .family-toggle.active {
+            background: rgba(255, 215, 0, 0.3);
+            transform: scale(1.1);
+        }
+
         @media (max-width: 480px) {
             body {
                 padding-top: 15px;
@@ -510,26 +546,39 @@
 
     <canvas id="confetti-canvas"></canvas>
     <button class="sound-toggle" id="sound-toggle" title="Toggle Sound">&#128266;</button>
+    <button class="family-toggle" id="family-toggle" title="Lägg till föräldrar">👨‍👩‍👧‍👦</button>
 
     <script>
         // ========== CONFIGURATION ==========
-        const BASE_NAMES = ['Klara', 'Ebbe', 'Lo'];
-        const SEGMENTS_PER_NAME = 6; // Each name appears 6 times = 18 total segments
+        const KIDS_NAMES = ['Klara', 'Ebbe', 'Lo'];
+        const PARENTS_NAMES = ['Rasmus', 'Maria'];
+        const SEGMENTS_PER_NAME = 6;
 
-        // Build the segments array in repeating order: Klara, Ebbe, Lo, Klara, Ebbe, Lo...
-        const SEGMENTS = [];
-        for (let i = 0; i < SEGMENTS_PER_NAME; i++) {
-            BASE_NAMES.forEach(name => SEGMENTS.push(name));
-        }
-
-        // Colors for each base name
+        // Colors for each name
         const NAME_COLORS = {
             'Klara': { bg: '#e63946', text: '#ffffff' },  // Red
             'Ebbe': { bg: '#2a9d8f', text: '#ffffff' },   // Teal
-            'Lo': { bg: '#e9c46a', text: '#1a0a2e' }      // Yellow
+            'Lo': { bg: '#e9c46a', text: '#1a0a2e' },     // Yellow
+            'Rasmus': { bg: '#264653', text: '#ffffff' }, // Dark Blue
+            'Maria': { bg: '#9b5de5', text: '#ffffff' }   // Purple
         };
 
+        // Dynamic segments array
+        let SEGMENTS = [];
+        let includeParents = false;
+
+        function buildSegments() {
+            const names = includeParents ? [...KIDS_NAMES, ...PARENTS_NAMES] : KIDS_NAMES;
+            SEGMENTS = [];
+            for (let i = 0; i < SEGMENTS_PER_NAME; i++) {
+                names.forEach(name => SEGMENTS.push(name));
+            }
+        }
+
+        buildSegments();
+
         // ========== DOM ELEMENTS ==========
+        const familyToggle = document.getElementById('family-toggle');
         const wheelContainer = document.getElementById('wheel');
         const wheelCanvas = document.getElementById('wheel-canvas');
         const ctx = wheelCanvas.getContext('2d');
@@ -703,6 +752,18 @@
                 soundToggle.innerHTML = soundEnabled ? '&#128266;' : '&#128263;';
                 soundToggle.classList.toggle('muted', !soundEnabled);
             });
+
+            familyToggle.addEventListener('click', () => {
+                if (isSpinning) return;
+                includeParents = !includeParents;
+                familyToggle.classList.toggle('active', includeParents);
+                familyToggle.title = includeParents ? 'Endast barnen' : 'Lägg till föräldrar';
+                buildSegments();
+                currentRotation = 0;
+                setupCanvas();
+                drawWheel();
+                updateWheelRotation();
+            });
         }
 
         function getAngleFromCenter(clientX, clientY) {
@@ -872,11 +933,16 @@
         // ========== WINNER ANNOUNCEMENT ==========
         function announceWinner() {
             const segmentAngle = 360 / SEGMENTS.length;
-            // Normalize rotation to 0-360, inverted because canvas rotates opposite to visual
-            let normalizedRotation = ((-currentRotation % 360) + 360) % 360;
 
-            // Add half segment to get the segment CENTER under pointer, not edge
-            const winningIndex = Math.floor((normalizedRotation + segmentAngle / 2) / segmentAngle) % SEGMENTS.length;
+            // Normalize rotation to 0-360
+            let rotation = currentRotation % 360;
+            if (rotation < 0) rotation += 360;
+
+            // Calculate which segment is at the top (under the pointer)
+            // When wheel rotates clockwise, segment indices go backwards
+            // Add half segment so we pick the segment whose CENTER is closest to pointer
+            const adjusted = (360 - rotation + segmentAngle / 2) % 360;
+            const winningIndex = Math.floor(adjusted / segmentAngle) % SEGMENTS.length;
 
             const winner = SEGMENTS[winningIndex];
             winnerNameEl.textContent = winner;
