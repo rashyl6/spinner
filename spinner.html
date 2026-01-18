@@ -932,17 +932,19 @@
 
         // ========== WINNER ANNOUNCEMENT ==========
         function announceWinner() {
-            const segmentAngle = 360 / SEGMENTS.length;
+            const numSegments = SEGMENTS.length;
+            const segmentAngle = 360 / numSegments;
 
-            // Normalize rotation to 0-360
-            let rotation = currentRotation % 360;
-            if (rotation < 0) rotation += 360;
+            // Normalize rotation to [0, 360)
+            let rotation = ((currentRotation % 360) + 360) % 360;
 
-            // Calculate which segment is at the top (under the pointer)
-            // When wheel rotates clockwise, segment indices go backwards
-            // Add half segment so we pick the segment whose CENTER is closest to pointer
-            const adjusted = (360 - rotation + segmentAngle / 2) % 360;
-            const winningIndex = Math.floor(adjusted / segmentAngle) % SEGMENTS.length;
+            // At rotation R, the segment at top is (numSegments - R/segmentAngle) mod numSegments
+            // This is because segment 0 starts at top, and rotating clockwise moves it right
+            const segmentOffset = rotation / segmentAngle;
+            let winningIndex = Math.floor(numSegments - segmentOffset);
+
+            // Handle edge case where winningIndex equals numSegments
+            winningIndex = ((winningIndex % numSegments) + numSegments) % numSegments;
 
             const winner = SEGMENTS[winningIndex];
             winnerNameEl.textContent = winner;
